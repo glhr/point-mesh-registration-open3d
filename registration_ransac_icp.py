@@ -140,9 +140,13 @@ if __name__ == '__main__':
 
     np.save("results/ransac_transformation.npy",result_ransac.transformation)
 
+    # display registration results
+    print(o3d.pipelines.registration.evaluate_registration(src, dst, max_correspondence_distance=len(src.points), transformation=result_ransac.transformation))
+
     # show RANSAC transformation on downsampled point cloud
     o3d.visualization.draw([src_down.transform(result_ransac.transformation), dst_down])
     #o3d.visualization.draw([src.transform(result.transformation), dst])
+
 
     # refine registration with point-to-point ICP
     result_icp = o3d.pipelines.registration.registration_icp(
@@ -151,5 +155,8 @@ if __name__ == '__main__':
         o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=args.max_iterations))
 
     np.save("results/icp_transformation.npy",result_icp.transformation)
-    print(result_icp)
+
+    # display registration results
+    print(o3d.pipelines.registration.evaluate_registration(src, dst, max_correspondence_distance=len(src.points), transformation=result_icp.transformation))
+
     o3d.visualization.draw([src.transform(result_icp.transformation), dst])
